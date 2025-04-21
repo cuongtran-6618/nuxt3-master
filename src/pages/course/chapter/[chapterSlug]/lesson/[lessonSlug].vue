@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="w-full container">
         <h1 class="text-3xl font-bold underline">Lesson</h1>
         <p class="mt-0 uppercase font-bold text-slate-400 mb-1">
             Lesson {{ chapter.number }} - {{ lesson.number }}
