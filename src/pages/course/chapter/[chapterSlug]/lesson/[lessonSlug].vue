@@ -21,6 +21,7 @@
 const course = useCourse();
 const route = useRoute();
 
+
 const chapter = computed(() => {
     return course.chapters.find((chapter) => {
         return chapter.slug.trim() === route.params.chapterSlug.trim()
@@ -32,5 +33,12 @@ const lesson = computed(() => {
     return chapter.value?.lessons.find(
         (lesson) => lesson.slug === route.params.lessonSlug
     );
+});
+
+const title = computed(() => {
+    return `${lesson.value?.title} - ${course.value?.title}`;
+});
+useHead({
+    title,
 });
 </script>
