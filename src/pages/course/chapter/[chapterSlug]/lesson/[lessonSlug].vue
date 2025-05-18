@@ -15,9 +15,13 @@
         </div>
         <VideoPlayer v-if="lesson.videoId" :videoId="lesson.videoId" />
         <p>{{ lesson.text }}</p>
+        
+        <LessonCompleteButton />
     </div>
 </template>
 <script setup>
+import { useCourse } from "../../../../../composables/useCourse";
+
 const course = useCourse();
 const route = useRoute();
 
@@ -41,4 +45,36 @@ const title = computed(() => {
 useHead({
     title,
 });
+
+const progress = useState('progress', () => {
+  return [];
+});
+
+const isLessonComplete = computed(() => {
+  if (!progress.value[chapter.value.number - 1]) {
+    return false;
+  }
+
+  if (
+    !progress.value[chapter.value.number - 1][
+      lesson.value.number - 1
+    ]
+  ) {
+    return false;
+  }
+
+  return progress.value[chapter.value.number - 1][
+    lesson.value.number - 1
+  ];
+});
+
+const toggleComplete = () => {
+  if (!progress.value[chapter.value.number - 1]) {
+    progress.value[chapter.value.number - 1] = [];
+  }
+
+  progress.value[chapter.value.number - 1][
+    lesson.value.number - 1
+  ] = !isLessonComplete.value;
+};
 </script>
