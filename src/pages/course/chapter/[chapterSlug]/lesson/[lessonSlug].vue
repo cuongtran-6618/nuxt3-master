@@ -16,7 +16,7 @@
         <VideoPlayer v-if="lesson?.videoId" :videoId="lesson?.videoId" />
         <p>{{ lesson?.text }}</p>
         
-        <LessonCompleteButton :model-value="isLessonComplete" @update:modelValue="throwError()"/>
+        <LessonCompleteButton :model-value="isLessonComplete" @update:modelValue="toggleComplete"/>
     </div>
 </template>
 <script lang="ts" setup>
@@ -81,4 +81,42 @@ const toggleComplete = () => {
     lesson.value.number - 1
   ] = !isLessonComplete.value;
 };
+
+/**
+ * @description This will create a middleware function that validates the chapter and lesson slugs.
+ * This function validates the chapter and lesson slugs from the route parameters.
+ * It checks if the chapter and lesson exist in the course data.
+ * If not, it throws a 404 error.
+ * @returns {boolean} Returns true if both chapter and lesson are found.
+ * @throws {Error} Throws a 404 error if chapter or lesson is not found.
+ */
+definePageMeta({
+  validate({ params }) {
+    const course = useCourse();
+
+    const chapter = course.chapters.find(
+      (chapter) => chapter.slug === params.chapterSlug
+    );
+
+    if (!chapter) {
+      return createError({
+        statusCode: 404,
+        message: 'Chapter not found',
+      });
+    }
+
+    const lesson = chapter.lessons.find(
+      (lesson) => lesson.slug === params.lessonSlug
+    );
+
+    if (!lesson) {
+      return createError({
+        statusCode: 404,
+        message: 'Lesson not found',
+      });
+    }
+
+    return true;
+  },
+});
 </script>
