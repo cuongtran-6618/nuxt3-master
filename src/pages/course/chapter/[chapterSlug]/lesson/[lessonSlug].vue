@@ -2,24 +2,24 @@
     <div class="w-full container">
         <h1 class="text-3xl font-bold underline">Lesson</h1>
         <p class="mt-0 uppercase font-bold text-slate-400 mb-1">
-            Lesson {{ chapter.number }} - {{ lesson.number }}
+            Lesson {{ chapter?.number }} - {{ lesson?.number }}
         </p>
-        <h2 class="my-0">{{ lesson.title }}</h2>
+        <h2 class="my-0">{{ lesson?.title }}</h2>
         <div class="flex space-x-4 mt-2 mb-8">
-            <NuxtLink v-if="lesson.sourceUrl" class="font-normal text-md text-gray-500" :to="lesson.sourceUrl">
+            <NuxtLink v-if="lesson?.sourceUrl" class="font-normal text-md text-gray-500" :to="lesson.sourceUrl">
                 Download Source Code
             </NuxtLink>
-            <NuxtLink v-if="lesson.downloadUrl" class="font-normal text-md text-gray-500" :to="lesson.downloadUrl">
+            <NuxtLink v-if="lesson?.downloadUrl" class="font-normal text-md text-gray-500" :to="lesson.downloadUrl">
                 Download Video
             </NuxtLink>
         </div>
-        <VideoPlayer v-if="lesson.videoId" :videoId="lesson.videoId" />
-        <p>{{ lesson.text }}</p>
+        <VideoPlayer v-if="lesson?.videoId" :videoId="lesson?.videoId" />
+        <p>{{ lesson?.text }}</p>
         
-        <LessonCompleteButton />
+        <LessonCompleteButton :model-value="isLessonComplete" @update:modelValue="throwError()"/>
     </div>
 </template>
-<script setup>
+<script lang="ts" setup>
 import { useCourse } from "../../../../../composables/useCourse";
 
 const course = useCourse();
@@ -49,6 +49,10 @@ useHead({
 const progress = useState('progress', () => {
   return [];
 });
+
+const throwError = () => {
+  throw new Error("This is a test error from the lesson page.");
+};
 
 const isLessonComplete = computed(() => {
   if (!progress.value[chapter.value.number - 1]) {
