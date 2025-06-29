@@ -1,50 +1,74 @@
 <template>
-    <div class="flex items-start justify-start min-h-screen py-2 gap-4">
-        <div class="flex flex-col items-center justify-center border-2 border-gray-300 rounded-lg p-4 w-1/3">
-            <div class="prose mr-4 p-8 bg-white rounded-md min-w-[20ch] max-w-[30ch] flex flex-col">
-                <h1 class="text-3xl font-bold underline">
-                    Chapters
-                </h1>
-            </div>
-            <div class="space-y-1 mb-4 flex flex-col w-full" v-for="chapter in chapters" :key="chapter.slug">
-                <h4>{{ chapter.title }}</h4>
-                <NuxtLink v-for="(lesson, index) in chapter.lessons" :key="lesson.slug"
-                    class="flex flex-row space-x-1 no-underline prose-sm font-normal py-1 px-4 -mx-4" :to="lesson.path"
-                    :class="{
-                        'bg-gray-200 text-blue-500': $route.fullPath === lesson.path,
-                        'text-gray-600 hover:text-blue-500': $route.fullPath !== lesson.path,
-                    }">
-                    <span class="text-gray-500">{{ index + 1 }}.</span>
-                    <span>{{ lesson.title }}</span>
-                </NuxtLink>
-            </div>
-        </div>
-        <div class="flex items-center justify-center border-2 border-gray-300 rounded-lg p-4 w-2/3">
-            <NuxtErrorBoundary>
-                <NuxtPage />
-                <template #error="{ error }">
-                    <p>
-                        Oh no, something went wrong with the lesson!
-                        <code>{{ error }}</code>
-                    </p>
-                    <p>
-                        <button class="hover:cursor-pointer bg-gray-500 text-white font-bold py-1 px-3 rounded"
-                            @click="resetError(error)">
-                            Reset
-                        </button>
-                    </p>
-                </template>
-            </NuxtErrorBoundary>
-        </div>
+  <div>
+    <div class="prose mb-12">
+      <h1>
+        <span class="font-medium">
+          <span class="font-bold">{{ title }}</span>
+        </span>
+      </h1>
     </div>
+
+    <div class="flex flex-row justify-center flex-grow">
+      <div
+        class="prose mr-4 p-8 bg-white rounded-md min-w-[20ch] max-w-[30ch] flex flex-col"
+      >
+        <h3>Chapters</h3>
+        <div
+          class="space-y-1 mb-4 flex flex-col"
+          v-for="chapter in chapters"
+          :key="chapter.slug"
+        >
+          <h4>{{ chapter.title }}</h4>
+          <NuxtLink
+            v-for="(lesson, index) in chapter.lessons"
+            :key="lesson.slug"
+            class="flex flex-row space-x-1 no-underline prose-sm font-normal py-1 px-4 -mx-4"
+            :to="lesson.path"
+            :class="{
+              'text-blue-500':
+                lesson.path === $route.fullPath,
+              'text-gray-600':
+                lesson.path !== $route.fullPath,
+            }"
+          >
+            <span class="text-gray-500"
+              >{{ index + 1 }}.</span
+            >
+            <span>{{ lesson.title }}</span>
+          </NuxtLink>
+        </div>
+      </div>
+
+      <div class="prose p-12 bg-white rounded-md w-[65ch]">
+        <NuxtErrorBoundary>
+          <NuxtPage />
+          <template #error="{ error }">
+            <p>
+              Oh no, something went wrong with the lesson!
+              <code>{{ error }}</code>
+            </p>
+            <p>
+              <button
+                class="hover:cursor-pointer bg-gray-500 text-white font-bold py-1 px-3 rounded"
+                @click="resetError(error)"
+              >
+                Reset
+              </button>
+            </p>
+          </template>
+        </NuxtErrorBoundary>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-const { chapters } = useCourse();
+const { chapters, title } = useCourse();
+
 const resetError = async (error) => {
-    await navigateTo(
-        '/course/chapter/1-chapter-1/lesson/1-introduction-to-typescript-with-vue-js-3'
-    );
-    error.value = null;
+  await navigateTo(
+    '/course/chapter/1-chapter-1/lesson/1-introduction-to-typescript-with-vue-js-3'
+  );
+  error.value = null;
 };
 </script>
